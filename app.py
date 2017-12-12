@@ -15,6 +15,8 @@ app.css.append_css({"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
 available_indicators = df['NA_ITEM'].unique()
 available_countries = df['GEO'].unique()
 
+df1 = df[df['UNIT'] == 'Current prices, million euro']
+
 app.layout = html.Div([
     
     html.Div([
@@ -57,7 +59,7 @@ app.layout = html.Div([
         max=df['TIME'].max(),
         value=df['TIME'].max(),
         step=None,
-        marks={str(year): str(year) for year in df['TIME'].unique()}
+        marks={str(TIME): str(TIME) for TIME in df['TIME'].unique()}
 
     ), style={'marginRight': 50, 'marginLeft': 110},),
 
@@ -115,11 +117,11 @@ def update_graph(xaxis_column_name, yaxis_column_name,
         'layout': go.Layout(
             xaxis={
                 'title': xaxis_column_name,
-                'type': 'linear' if xaxis_type == 'Linear' else 'log'
+                'type': 'linear'
             },
             yaxis={
                 'title': yaxis_column_name,
-                'type': 'linear' if yaxis_type == 'Linear' else 'log'
+                'type': 'linear'
             },
             margin={'l': 110, 'b': 50, 't': 20, 'r': 50},
             hovermode='closest'
@@ -135,13 +137,11 @@ def update_graph(xaxis_column_name, yaxis_column_name,
 
 def update_graph(xaxis_column_name, yaxis_column_name):
 
-	dff = df[df['GEO'] == yaxis_column_name]
-
+    dff = df1[df1['GEO'] == yaxis_column_name]
     return {
         'data': [go.Scatter(
-            x=dff[['NA_ITEM'].unique(),
+            x=dff['TIME'].unique(),
             y=dff[dff['NA_ITEM'] == xaxis_column_name]['Value'],
-            text=dff[dff['NA_ITEM'] == yaxis_column_name]['GEO'],
             mode='lines',
             marker={
                 'size': 15,
